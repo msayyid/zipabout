@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.zipaboutgui.ui.controller.AdminAddUserController">
+
+    <!-- Top bar -->
+    <top>
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <Button text="← Back" onAction="#handleBack"/>
+
+            <Label text="Add User"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+    <!-- Center form -->
+    <center>
+        <VBox alignment="CENTER">
+            <VBox spacing="12"
+                  alignment="CENTER_LEFT"
+                  prefWidth="360"
+                  maxWidth="360">
+
+                <Label text="Username"/>
+                <TextField fx:id="usernameField"
+                           prefWidth="360"/>
+
+                <Label text="Name"/>
+                <TextField fx:id="nameField"
+                           prefWidth="360"/>
+
+                <Label text="Password"/>
+                <PasswordField fx:id="passwordField"
+                               prefWidth="360"/>
+
+                <Button text="Add User"
+                        prefWidth="140"
+                        onAction="#handleAddUser"/>
+
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>

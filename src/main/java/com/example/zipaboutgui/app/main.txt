@@ -1,0 +1,562 @@
+from main, tests:
+// --- Create some shared equipment ---
+        Equipment helmet = new Equipment(EquipmentType.HELMET, "ABS plastic", "M");
+        Equipment gloves = new Equipment(EquipmentType.GLOVE, "Leather", "M");
+        Equipment[] safetySet = {helmet, gloves};
+
+        // --- Electric parts reused by e-vehicles ---
+        Battery battery1 = new Battery(400, 100, true);
+        Motor motor1 = new Motor(250);
+        Controller controller1 = new Controller("v1.0");
+
+        Battery battery2 = new Battery(350, 80, false);
+        Motor motor2 = new Motor(300);
+        Controller controller2 = new Controller("v2.1");
+
+        // --- Create vehicles ---
+        EBike ebike1 = new EBike("Giant", "Explore E+", safetySet, battery1, motor1, controller1);
+        ebike1.setFrameType(FrameType.HYBRID);
+        ebike1.setSuspensionType(SuspensionType.FRONT);
+        ebike1.setAssistLevel(3);
+        ebike1.assignAssetCode("EB-001");
+
+        EScooter scooter1 = new EScooter("Xiaomi", "Pro 2", safetySet, battery2, motor2, controller2);
+        scooter1.assignAssetCode("ES-001");
+
+        Bike bike1 = new Bike("Trek", "FX 1", safetySet);
+        bike1.assignAssetCode("BK-001");
+
+        // --- Create users ---
+        User alice = new User("U001", "Alice");
+        User bob = new User("U002", "Bob");
+        User carol = new User("U003", "Carol");
+
+        // --- Get RentalService singleton ---
+        RentalService rentalService = RentalService.getInstance();
+
+        // Register users and vehicles
+        rentalService.registerUser(alice);
+        rentalService.registerUser(bob);
+        rentalService.registerUser(carol);
+
+        System.out.println();
+        rentalService.registerVehicle(ebike1);
+        System.out.println();
+        rentalService.registerVehicle(scooter1);
+        System.out.println();
+        rentalService.registerVehicle(bike1);
+
+        // --- Demo bookings ---
+
+        System.out.println("\n\n--- Booking demo ---");
+        rentalService.bookVehicle(alice, ebike1);   // should succeed
+        rentalService.bookVehicle(bob, ebike1);     // should be politely refused
+        rentalService.bookVehicle(bob, scooter1);   // should succeed
+        rentalService.bookVehicle(carol, bike1);    // should succeed
+
+        // --- Print current state ---
+        System.out.println("\n--- Available vehicles ---");
+        rentalService.printAvailableVehicles();
+
+        System.out.println("\n--- All rentals ---");
+        rentalService.printAllRentals();
+
+        System.out.println("\n--- User details ---");
+        alice.printDetails();
+        bob.printDetails();
+        carol.printDetails();
+
+        // --- Release vehicles ---
+        rentalService.releaseVehicle(alice, ebike1);
+//        ebike1.markAsReleased();
+        alice.printDetails();
+        rentalService.printAvailableVehicles();
+        System.out.println(ebike1.isAvailable());
+
+        // rebook the released vehicle
+        rentalService.bookVehicle(bob, ebike1);
+        bob.printDetails();
+        ebike1.printDetails();
+
+        rentalService.printAvailableVehicles();
+
+        System.out.println(" testing viewing bookings of a user");
+        alice.printMyBookings();
+        bob.printMyBookings();
+
+        // release bob's bookings
+        rentalService.releaseVehicle(bob, ebike1);
+        rentalService.releaseVehicle(bob, scooter1);
+
+        bob.printMyBookings();
+
+
+
+//        System.out.println("\n--- Vehicle details ---");
+//        Vehicle[] vehicles = {ebike1, scooter1, bike1};
+//        for (Vehicle v : vehicles) {
+//            v.printDetails();
+//        }
+
+
+
+this one was for the sprint 1:
+
+//        Equipment equipment = new Equipment(EquipmentType.GLOVE, "Leather", "M");
+//        List<Equipment> equipmentList = new ArrayList<>();
+//        equipmentList.add(equipment);
+//
+//        Battery battery = new Battery(250, 100, false);
+//        Motor motor = new Motor(300);
+//        Controller controller = new Controller("2.0");
+//        EBike ebike1 = new EBike("Giant 1", "Explore E+", equipmentList, battery, motor, controller);
+//        ebike1.setFrameType(FrameType.HYBRID);
+//        ebike1.setSuspensionType(SuspensionType.FULL);
+//        ebike1.setAssistLevel(3);
+//        ebike1.printDetails();
+//
+//        ebike1.go();
+//        System.out.println("I am here now");
+//        ebike1.assignAssetCode("EB-001");
+//        System.out.println(ebike1.getId());
+//        System.out.println(ebike1.getAssetCode());
+//
+//
+//        ebike1.brake();
+//
+//        List<Vehicle> vehicles = new ArrayList<>();
+//
+//        vehicles.add(ebike1);
+//        vehicles.add(new EBike("Xiaomi", "Pro 2", equipmentList, battery, motor, controller));
+//        vehicles.add(new EBike("Trek", "FX 1", equipmentList, battery, motor, controller));
+//
+//        System.out.println("I NEED TO SEE THIS ONE");
+//        System.out.println(vehicles);
+//        for (Vehicle v : vehicles) {
+//            v.printDetails();
+//            v.go();
+//            v.brake();
+//            System.out.println("----------------------------------------");
+//        }
+
+        // the above is from sprint 1 demo
+
+
+
+        this is the latest change made in the main:
+
+        public class Main {
+            public static void main(String[] args) {
+
+
+                // --- Equipment sets ---
+                Equipment helmetM = new Equipment(EquipmentType.HELMET, "ABS plastic", "M");
+                Equipment helmetL = new Equipment(EquipmentType.HELMET, "ABS plastic", "L");
+                Equipment glovesM = new Equipment(EquipmentType.GLOVE, "Leather", "M");
+                Equipment pads = new Equipment(EquipmentType.KNEEPAD, "Foam", "Universal");
+
+                Equipment[] safetySet1 = {helmetM, glovesM};
+                Equipment[] safetySet2 = {helmetL, pads};
+                Equipment[] basicSet = {helmetM};
+
+                // --- Electric parts ---
+                Battery battery1 = new Battery(400, 100, true, BatteryChemistry.LI_ION);
+                Motor motor1 = new Motor(250);
+                Controller controller1 = new Controller("v1.0");
+
+                Battery battery2 = new Battery(350, 80, false, BatteryChemistry.LI_ION);
+                Motor motor2 = new Motor(300);
+                Controller controller2 = new Controller("v2.1");
+
+                Battery battery3 = new Battery(500, 65, true, BatteryChemistry.LFP);
+                Motor motor3 = new Motor(350);
+                Controller controller3 = new Controller("v3.0");
+
+                // --- Electric vehicles: EBike, EScooter, ESkateboard, Segway ---
+                EBike ebike1 = new EBike("Giant", "Explore E+", safetySet1, battery1, motor1, controller1);
+                ebike1.setFrameType(FrameType.HYBRID);
+                ebike1.setSuspensionType(SuspensionType.FRONT);
+                ebike1.setAssistLevel(3);
+                ebike1.assignAssetCode("EB-001");
+
+                EBike ebike2 = new EBike("Trek", "Powerfly 4", safetySet2, battery3, motor3, controller3);
+                ebike2.setFrameType(FrameType.MTB);
+                ebike2.setSuspensionType(SuspensionType.FULL);
+                ebike2.setAssistLevel(4);
+                ebike2.assignAssetCode("EB-002");
+
+                EScooter scooter1 = new EScooter("Xiaomi", "Pro 2", safetySet1, battery2, motor2, controller2);
+                scooter1.assignAssetCode("ES-001");
+
+                EScooter scooter2 = new EScooter("Segway-Ninebot", "Max G30", basicSet, battery3, motor3, controller3);
+                scooter2.assignAssetCode("ES-002");
+
+                ESkateboard eskate1 = new ESkateboard("Boosted", "Mini X", safetySet1, battery2, motor2, controller2);
+                eskate1.assignAssetCode("ESK-001");
+
+                Segway segway1 = new Segway("Segway", "i2 SE", safetySet2, battery3, motor3, controller3);
+                segway1.assignAssetCode("SG-001");
+
+                // --- Non-electric vehicles: Bike, KickScooter, Skateboard ---
+                Bike bike1 = new Bike("Trek", "FX 1", safetySet1);
+                bike1.assignAssetCode("BK-001");
+
+                Bike bike2 = new Bike("Specialized", "Sirrus 2.0", basicSet);
+                bike2.assignAssetCode("BK-002");
+
+                KickScooter kickScooter1 = new KickScooter("Oxelo", "Town 7XL", safetySet2);
+                kickScooter1.assignAssetCode("KS-001");
+
+                Skateboard skateboard1 = new Skateboard("Element", "Section", basicSet);
+                skateboard1.assignAssetCode("SB-001");
+
+                Vehicle[] allVehicles = {
+                        ebike1, ebike2,
+                        scooter1, scooter2,
+                        eskate1, segway1,
+                        bike1, bike2,
+                        kickScooter1, skateboard1
+                };
+
+                // --- Users (with first + last names) ---
+                User alice = new User("U001", "Alice Smith");
+                User bob   = new User("U002", "Bob Johnson");
+                User carol = new User("U003", "Carol Lee");
+                User dave  = new User("U004", "David Brown");
+                User eve   = new User("U005", "Eve Davis");
+
+                User[] allUsers = {alice, bob, carol, dave, eve};
+
+                // --- Get RentalService singleton ---
+                RentalService rentalService = RentalService.getInstance();
+
+                // Register users and vehicles
+                System.out.println("\n--- Registering users ---");
+                for (User u : allUsers) {
+                    rentalService.registerUser(u);
+                }
+
+                System.out.println("\n--- Registering vehicles ---");
+                for (Vehicle v : allVehicles) {
+                    rentalService.registerVehicle(v);
+                }
+
+                // --- Booking demo ---
+                System.out.println("\n--- Booking demo (some vehicles booked, some stay free) ---");
+                rentalService.bookVehicle(alice, ebike1);       // OK
+                rentalService.bookVehicle(bob, ebike1);         // should fail (already booked by Alice)
+                rentalService.bookVehicle(bob, scooter1);       // OK
+                rentalService.bookVehicle(carol, bike1);        // OK
+                rentalService.bookVehicle(dave, segway1);       // OK
+                rentalService.bookVehicle(eve, kickScooter1);   // OK
+
+                // NOTE: ebike2, scooter2, eskate1, bike2, skateboard1 remain UNBOOKED in base
+
+                // --- Polymorphism demo: go() and brake() for all vehicles ---
+                System.out.println("\n--- Polymorphism test: go() and brake() ---");
+                for (Vehicle v : allVehicles) {
+                    v.go();
+                    v.brake();
+                    System.out.println();
+                }
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("This is just to kill time, make the time pass in rental time: ");
+                String something = scanner.nextLine();
+                System.out.println(something);
+
+                // --- Release a few rentals to test status + loyalty + times ---
+                System.out.println("\n--- Releasing some rentals (to test COMPLETED status + loyalty) ---");
+                rentalService.releaseVehicle(alice, ebike1);     // COMPLETED, Alice gets 1 point
+                rentalService.releaseVehicle(bob, scooter1);     // COMPLETED, Bob gets 1 point
+
+                // Carol, Dave, Eve still have ACTIVE rentals.
+
+                // --- Active rentals summary ---
+                System.out.println("\n--- Active rentals ---");
+                var activeRentals = rentalService.getActiveRentals();
+                System.out.println("Number of active rentals: " + activeRentals.size());
+
+                // --- All rentals (with status, start, end) ---
+                System.out.println("\n--- All rentals (with status + times) ---");
+                rentalService.printAllRentals();
+
+                // --- User details (to see loyalty points after releases) ---
+                System.out.println("\n--- User details ---");
+                for (User u : allUsers) {
+                    u.printDetails();
+                    // If you implemented printMyBookings(), you can also do:
+                    // u.printMyBookings();
+                    // System.out.println();
+                }
+
+                // --- Vehicle details (availability + current user) ---
+                System.out.println("\n--- Vehicle details ---");
+                for (Vehicle v : allVehicles) {
+                    v.printDetails();
+                }
+
+                System.out.println("\n--- Loyalty test: multiple rentals for Alice ---");
+
+        // Book and release ebike2 for Alice several times
+                rentalService.bookVehicle(alice, ebike2);
+                rentalService.releaseVehicle(alice, ebike2);
+
+                rentalService.bookVehicle(alice, ebike2);
+                rentalService.releaseVehicle(alice, ebike2);
+
+                rentalService.bookVehicle(alice, ebike2);
+                rentalService.releaseVehicle(alice, ebike2);
+
+                rentalService.bookVehicle(alice, ebike2);
+                rentalService.releaseVehicle(alice, ebike2);
+
+                rentalService.bookVehicle(alice, ebike2);
+                rentalService.releaseVehicle(alice, ebike2);
+
+                rentalService.bookVehicle(alice, ebike2);
+                rentalService.releaseVehicle(alice, ebike2);
+
+        // at this point Alice should have >3 completed rentals, start earning points
+
+                rentalService.bookVehicle(alice, ebike2);
+                rentalService.releaseVehicle(alice, ebike2);
+
+                rentalService.bookVehicle(alice, ebike2);
+                rentalService.releaseVehicle(alice, ebike2);
+
+                System.out.println("\n--- Alice after loyalty test ---");
+                alice.printDetails();
+                alice.redeemFreeRide();
+                alice.printDetails();
+
+
+
+
+
+
+
+            }
+        }
+
+
+
+        new change
+
+        public class Main {
+            public static void main(String[] args) {
+
+                // --- Equipment sets ---
+                Equipment helmetM = new Equipment(EquipmentType.HELMET, "ABS plastic", "M");
+                Equipment helmetL = new Equipment(EquipmentType.HELMET, "ABS plastic", "L");
+                Equipment glovesM = new Equipment(EquipmentType.GLOVE, "Leather", "M");
+                Equipment pads    = new Equipment(EquipmentType.KNEEPAD, "Foam", "Universal");
+
+                Equipment[] safetySet1 = {helmetM, glovesM};
+                Equipment[] safetySet2 = {helmetL, pads};
+                Equipment[] basicSet   = {helmetM};
+
+                // --- Electric parts ---
+                // using the 3-arg ctor; it still works with 4 args because it delegates
+                Battery battery1 = new Battery(400, 100, true, BatteryChemistry.LI_ION);
+                Battery battery2 = new Battery(350, 80, false);
+                Battery battery3 = new Battery(500, 65, true);
+
+                Motor motor1 = new Motor(250);
+                Motor motor2 = new Motor(300);
+                Motor motor3 = new Motor(350);
+
+                Controller controller1 = new Controller("v1.0");
+                Controller controller2 = new Controller("v2.1");
+                Controller controller3 = new Controller("v3.0");
+
+                // --- Vehicle factory ---
+                VehicleFactory factory = new VehicleFactory();
+
+                System.out.println("\n--- Creating vehicles via factory ---");
+
+                // Electric bikes (created via factory, then tweaked with setters)
+                EBike ebike1 = (EBike) factory.createVehicle(
+                        VehicleKind.E_BIKE,
+                        "Giant", "Explore E+",
+                        safetySet1, battery1, motor1, controller1
+                );
+                ebike1.assignAssetCode("EB-001");
+                // defaults from EBike constructor are fine for this one
+
+                EBike ebike2 = (EBike) factory.createVehicle(
+                        VehicleKind.E_BIKE,
+                        "Trek", "Powerfly 4",
+                        safetySet2, battery3, motor3, controller3
+                );
+                ebike2.assignAssetCode("EB-002");
+                // tweak this model to look more MTB / sporty
+                ebike2.setFrameType(FrameType.MTB);
+                ebike2.setSuspensionType(SuspensionType.FULL);
+                ebike2.setAssistLevel(4);
+                ebike2.setBrakeType(BrakeType.HYDRAULIC_DISC);
+                ebike2.setWheelSizeInch(29.0);
+                ebike2.setTireWidthMm(55);
+                ebike2.setGearCount(11);
+
+                // Electric scooters
+                Vehicle scooter1 = factory.createVehicle(
+                        VehicleKind.E_SCOOTER,
+                        "Xiaomi", "Pro 2",
+                        safetySet1, battery2, motor2, controller2
+                );
+                scooter1.assignAssetCode("ES-001");
+
+                Vehicle scooter2 = factory.createVehicle(
+                        VehicleKind.E_SCOOTER,
+                        "Segway-Ninebot", "Max G30",
+                        basicSet, battery3, motor3, controller3
+                );
+                scooter2.assignAssetCode("ES-002");
+
+                // Electric skateboard
+                Vehicle eskate1 = factory.createVehicle(
+                        VehicleKind.E_SKATEBOARD,
+                        "Boosted", "Mini X",
+                        safetySet1, battery2, motor2, controller2
+                );
+                eskate1.assignAssetCode("ESK-001");
+
+                // Segway
+                Vehicle segway1 = factory.createVehicle(
+                        VehicleKind.SEGWAY,
+                        "Segway", "i2 SE",
+                        safetySet2, battery3, motor3, controller3
+                );
+                segway1.assignAssetCode("SG-001");
+
+                // Non-electric bikes
+                Vehicle bike1 = factory.createVehicle(
+                        VehicleKind.BIKE,
+                        "Trek", "FX 1",
+                        safetySet1, null, null, null
+                );
+                bike1.assignAssetCode("BK-001");
+
+                Vehicle bike2 = factory.createVehicle(
+                        VehicleKind.BIKE,
+                        "Specialized", "Sirrus 2.0",
+                        basicSet, null, null, null
+                );
+                bike2.assignAssetCode("BK-002");
+
+                // Kick scooter
+                Vehicle kick1 = factory.createVehicle(
+                        VehicleKind.KICK_SCOOTER,
+                        "Oxelo", "Town 7XL",
+                        safetySet2, null, null, null
+                );
+                kick1.assignAssetCode("KS-001");
+
+                // Skateboard
+                Vehicle skate1 = factory.createVehicle(
+                        VehicleKind.SKATEBOARD,
+                        "Element", "Section",
+                        basicSet, null, null, null
+                );
+                skate1.assignAssetCode("SB-001");
+
+                Vehicle[] allVehicles = {
+                        ebike1, ebike2,
+                        scooter1, scooter2,
+                        eskate1, segway1,
+                        bike1, bike2,
+                        kick1, skate1
+                };
+
+                // --- Users ---
+                User alice = new User("U001", "Alice Smith");
+                User bob   = new User("U002", "Bob Johnson");
+                User carol = new User("U003", "Carol Lee");
+                User dave  = new User("U004", "David Brown");
+                User eve   = new User("U005", "Eve Davis");
+
+                User[] users = {alice, bob, carol, dave, eve};
+
+                // --- Rental service (singleton) ---
+                RentalService rentalService = RentalService.getInstance();
+
+                // Register observers
+                NotificationObserver notificationObserver = new NotificationObserver();
+                MaintenanceObserver maintenanceObserver = new MaintenanceObserver();
+                rentalService.addObserver(notificationObserver);
+                rentalService.addObserver(maintenanceObserver);
+
+        //        rentalService.addObserver(new NotificationObserver());
+
+
+                System.out.println("\n--- Registering users ---");
+                for (User u : users) {
+                    rentalService.registerUser(u);
+                }
+
+                System.out.println("\n--- Registering vehicles ---");
+                for (Vehicle v : allVehicles) {
+                    rentalService.registerVehicle(v);
+                }
+
+                // --- Booking demo ---
+                System.out.println("\n--- Booking demo ---");
+                rentalService.bookVehicle(alice, ebike1);     // should succeed
+                rentalService.bookVehicle(bob, ebike1);       // should fail (already booked by Alice)
+                rentalService.bookVehicle(bob, scooter1);     // succeed
+                rentalService.bookVehicle(carol, bike1);      // succeed
+                rentalService.bookVehicle(dave, segway1);     // succeed
+                rentalService.bookVehicle(eve, kick1);        // succeed
+                // leave ebike2, scooter2, eskate1, bike2, skate1 free initially
+
+                // --- Polymorphism test: go() + brake() ---
+                System.out.println("\n--- Polymorphism test: go() and brake() ---");
+                for (Vehicle v : allVehicles) {
+                    v.go();
+                    v.brake();
+                    System.out.println();
+                }
+
+                // --- Release some rentals to trigger COMPLETED + loyalty ---
+                System.out.println("\n--- Completing some rentals ---");
+                rentalService.releaseVehicle(alice, ebike1);  // 1 completed for Alice
+                rentalService.releaseVehicle(bob, scooter1);  // 1 completed for Bob
+
+                // --- Loyalty test: Alice makes more rentals on ebike2 ---
+                System.out.println("\n--- Loyalty test: Alice makes more rentals on EB-002 ---");
+                for (int i = 0; i < 5; i++) {  // 5 more rentals
+                    rentalService.bookVehicle(alice, ebike2);
+                    rentalService.releaseVehicle(alice, ebike2);
+                }
+
+                System.out.println("\n--- Alice after loyalty test ---");
+                alice.printDetails();
+                alice.redeemFreeRide();
+                alice.printDetails();
+
+                // --- Active rentals summary ---
+                System.out.println("\n--- Active rentals ---");
+                var activeRentals = rentalService.getActiveRentals();
+                System.out.println("Number of active rentals: " + activeRentals.size());
+
+                // --- All rentals with status + times + duration ---
+                System.out.println("\n--- All rentals summary ---");
+                rentalService.printAllRentals();
+
+                // --- Final user details ---
+                System.out.println("\n--- User details ---");
+                for (User u : users) {
+                    u.printDetails();
+                }
+
+                // --- Final vehicle details ---
+                System.out.println("\n--- Vehicle details ---");
+                for (Vehicle v : allVehicles) {
+                    v.printDetails();
+                }
+
+                // Maintenance observer message
+                System.out.println("\n--- Maintenance Usage Summary (from observer) ---");
+                maintenanceObserver.printUsageSummary();
+            }
+        }

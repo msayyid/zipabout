@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.zipaboutgui.ui.controller.AdminUsersController">
+
+    <!-- Top bar -->
+    <top>
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <Button text="← Back" onAction="#handleBack"/>
+
+            <Label text="Users"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+    <!-- Users table -->
+    <center>
+        <TableView fx:id="usersTable"
+                   prefWidth="660">
+
+            <columns>
+                <TableColumn fx:id="idColumn"
+                             text="User ID"
+                             prefWidth="80"
+                             resizable="false"/>
+
+                <TableColumn fx:id="nameColumn"
+                             text="Name"
+                             prefWidth="280"
+                             resizable="false"/>
+
+                <TableColumn fx:id="roleColumn"
+                             text="Role"
+                             prefWidth="120"
+                             resizable="false"/>
+
+                <TableColumn fx:id="vipColumn"
+                             text="VIP"
+                             prefWidth="100"
+                             resizable="false"/>
+
+                <TableColumn fx:id="pointsColumn"
+                             text="Loyalty Points"
+                             prefWidth="100"
+                             resizable="false"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <!-- Bottom actions -->
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <Button text="Add User"
+                    onAction="#handleAddUser"/>
+
+            <Button text="View Details"
+                    onAction="#handleViewDetails"/>
+
+            <Button text="Remove User"
+                    onAction="#handleRemoveUser"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

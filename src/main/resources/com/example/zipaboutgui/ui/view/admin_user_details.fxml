@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.zipaboutgui.ui.controller.AdminUserDetailsController">
+
+    <!-- Top bar -->
+    <top>
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <Button text="← Back" onAction="#handleBack"/>
+
+            <Label text="User Details"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="14">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <!-- User info -->
+            <GridPane hgap="12" vgap="8">
+
+                <Label text="User ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <Label fx:id="idLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Username:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <Label fx:id="usernameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Name:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <Label fx:id="nameLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Role:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <Label fx:id="roleLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label text="VIP:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <Label fx:id="vipLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <Label text="Loyalty Points:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <Label fx:id="pointsLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                <Label text="Completed Rentals:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                <Label fx:id="completedLabel" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+            </GridPane>
+
+            <Separator/>
+
+            <!-- Active rental -->
+            <Label text="Active Rental"
+                   style="-fx-font-weight: bold;"/>
+
+            <Label fx:id="activeRentalLabel"/>
+
+            <Separator/>
+
+            <!-- Past rentals -->
+            <Label text="Past Rentals"
+                   style="-fx-font-weight: bold;"/>
+
+            <TableView fx:id="pastRentalsTable">
+                <columns>
+                    <TableColumn fx:id="vehicleColumn" text="Vehicle" prefWidth="200"/>
+                    <TableColumn fx:id="startColumn" text="Start Time" prefWidth="160"/>
+                    <TableColumn fx:id="endColumn" text="End Time" prefWidth="160"/>
+                    <TableColumn fx:id="statusColumn" text="Status" prefWidth="120"/>
+                </columns>
+            </TableView>
+
+        </VBox>
+    </center>
+
+</BorderPane>

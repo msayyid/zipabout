@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.zipaboutgui.ui.controller.AdminHomeController">
+
+    <center>
+        <VBox spacing="18" alignment="CENTER">
+
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
+
+            <Label text="Admin Dashboard"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;" />
+
+            <Button text="Active Rentals"
+                    prefWidth="200"
+                    onAction="#handleActiveRentals" />
+
+            <Button text="Manage Users"
+                    prefWidth="200"
+                    onAction="#handleUsers"/>
+
+            <Button text="Manage Vehicles"
+                    prefWidth="200"
+                    onAction="#handleVehicles" />
+
+            <Separator prefWidth="200"/>
+
+            <Button text="Logout"
+                    prefWidth="200"
+                    onAction="#handleLogout" />
+
+        </VBox>
+    </center>
+
+</BorderPane>

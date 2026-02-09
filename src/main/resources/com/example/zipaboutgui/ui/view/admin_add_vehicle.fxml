@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.zipaboutgui.ui.controller.AdminAddVehicleController">
+
+    <!-- Top bar -->
+    <top>
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <Button text="← Back" onAction="#handleBack"/>
+
+            <Label text="Add Vehicle"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+    <!-- Centered form -->
+    <center>
+        <StackPane>
+            <VBox spacing="12"
+                  prefWidth="360"
+                  maxWidth="360">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+
+                <Label text="Vehicle Type"/>
+                <ComboBox fx:id="typeComboBox"
+                          promptText="Select vehicle type"
+                          maxWidth="300"/>
+
+                <Label text="Brand"/>
+                <TextField fx:id="brandField"
+                           maxWidth="300"/>
+
+                <Label text="Model"/>
+                <TextField fx:id="modelField"
+                           maxWidth="300"/>
+
+                <Label text="Asset Code"/>
+                <TextField fx:id="assetCodeField"
+                           maxWidth="300"/>
+
+                <Separator/>
+
+                <Button text="Add Vehicle"
+                        prefWidth="140"
+                        onAction="#handleAddVehicle"/>
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>

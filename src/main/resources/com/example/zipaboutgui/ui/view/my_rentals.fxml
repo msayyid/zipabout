@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.zipaboutgui.ui.controller.MyRentalsController">
+
+    <!-- Top bar -->
+    <top>
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <Button text="Back"
+                    onAction="#handleBack" />
+
+            <Label text="My Rentals"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <!-- Rentals table -->
+    <center>
+        <TableView fx:id="rentalsTable">
+            <columns>
+
+                <TableColumn fx:id="vehicleCol" text="Vehicle" prefWidth="160"/>
+                <TableColumn fx:id="typeCol" text="Type" prefWidth="120"/>
+                <TableColumn fx:id="startCol" text="Start Time" prefWidth="160"/>
+                <TableColumn fx:id="endCol" text="End Time" prefWidth="160"/>
+                <TableColumn fx:id="statusCol" text="Status" prefWidth="120"/>
+
+            </columns>
+        </TableView>
+    </center>
+
+</BorderPane>

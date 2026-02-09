@@ -1,0 +1,358 @@
+@startuml
+' =========================
+' ZipAbout - Detailed UML
+' =========================
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty members
+
+' -------------------------
+' ENUMS
+' -------------------------
+'enum BatteryChemistry { LI_ION; LI_PO; LFP; NMC; OTHER }
+'enum BrakeType { RIM; MECHANICAL_DISC; HYDRAULIC_DISC; DRUM; FOOT }
+'enum DisplayFeature { SPEED; RANGE; BATTERY_PERCENT; TRIP_DISTANCE; LIGHT_CONTROL; RIDE_MODE_SELECTION }
+'enum EquipmentType { HELMET; KNEEPAD; GLOVE; ELBOWPAD; REFLECTIVE_VEST }
+'enum FrameType { CITY; HYBRID; MTB; ROAD; FOLDING; CARGO }
+'enum MotorType { HUB_FRONT; HUB_REAR; MID_DRIVE; DUAL_HUB }
+'enum PasType { CADENCE_BASED; TORQUE_BASED; COMBINED }
+'enum RentalStatus { ACTIVE; COMPLETED; CANCELLED }
+'enum RideMode { ECO; NORMAL; SPORT; TURBO }
+'enum Role { USER; ADMIN }
+'enum ScooterType { COMMUTER; OFF_ROAD; KIDS; PERFORMANCE }
+'enum SuspensionType { RIGID; FRONT; REAR; FULL }
+'enum TireType { SLICK; HYBRID; KNOBBY; SOLID }
+'enum VehicleKind { E_BIKE; E_SCOOTER; E_SKATEBOARD; SEGWAY; BIKE; KICK_SCOOTER; SKATEBOARD }
+
+' -------------------------
+' PARTS (domain.parts)
+' -------------------------
+class Battery {
+  - level : double
+  - capacityWh : double
+  - removable : boolean
+  - cycleCount : int
+  - chemistry : BatteryChemistry
+  + Battery(capacityWh: double, level: double, removable: boolean)
+  + Battery(capacityWh: double, level: double, removable: boolean, chemistry: BatteryChemistry)
+  + getCycleCount() : int
+  + setCycleCount(cycleCount: int) : void
+  + isRemovable() : boolean
+  + setRemovable(removable: boolean) : void
+  + getCapacityWh() : double
+  + setCapacityWh(capacityWh: double) : void
+  + setLevel(level: double) : void
+  + getLevel() : double
+  + getChemistry() : BatteryChemistry
+  + setChemistry(chemistry: BatteryChemistry) : void
+  + getCurrentChargePercent() : String
+}
+
+class Controller {
+  - firmWareVersion : String
+  + Controller(firmWareVersion: String)
+  + getFirmWareVersion() : String
+  + setFirmWareVersion(firmWareVersion: String) : void
+  + getFirmwareVersion() : String
+}
+
+class Motor {
+  - powerW : int
+  + Motor(powerW: int)
+  + getPowerW() : int
+  + setPowerW(powerW: int) : void
+  + getPowerWatts() : String
+}
+
+' -------------------------
+' EQUIPMENT (domain.equipment)
+' -------------------------
+class Equipment {
+  - type : EquipmentType
+  - material : String
+  - size : String
+  + Equipment(type: EquipmentType, material: String, size: String)
+  + getType() : EquipmentType
+  + getMaterial() : String
+  + getSize() : String
+}
+
+' -------------------------
+' USER (domain.user)
+' NOTE: exact fields/methods depend on your User.java.
+' Below reflects your stated domain model + methods used in controllers.
+' -------------------------
+class User {
+  - id : String
+  - username : String
+  - name : String
+  - password : String
+  - role : Role
+  - vip : boolean
+  - loyaltyPoints : int
+  + User(id: String, username: String, name: String, password: String, role: Role)
+  + getId() : String
+  + getUsername() : String
+  + getName() : String
+  + getPassword() : String
+  + getRole() : Role
+  + isVip() : boolean
+  + getLoyaltyPoints() : int
+  + isAdmin() : boolean
+  + getTotalCompletedRentals() : int
+}
+
+' -------------------------
+' VEHICLE (domain.vehicle)
+' NOTE: exact fields/methods depend on your Vehicle.java.
+' Below reflects what is required by Rental + controllers + vehicle subclasses.
+' -------------------------
+abstract class Vehicle {
+  - id : String
+  - make : String
+  - model : String
+  - assetCode : String
+  - available : boolean
+  - currentUser : User
+  ' Your code uses getEquipments().isEmpty(), so treat as collection
+  - equipments : Equipment[*]
+
+  + Vehicle(make: String, model: String, equipments: Equipment[])
+  + getId() : String
+  + getMake() : String
+  + getModel() : String
+  + getAssetCode() : String
+  + assignAssetCode(assetCode: String) : void
+  + isAvailable() : boolean
+  + getCurrentUser() : User
+  + getEquipments() : java.util.List<Equipment>
+  + markAsBooked(user: User) : void
+  + markAsReleased() : void
+
+  + go() : void
+  + brake() : void
+  + printDetails() : void
+  + getVehicleType() : String
+}
+
+Vehicle o-- "0..*" Equipment : has
+Vehicle --> "0..1" User : currentUser
+
+' -------------------------
+' ELECTRIC VEHICLE (domain.vehicle)
+' -------------------------
+abstract class ElectricVehicle {
+  - motor : Motor
+  - controller : Controller
+  - battery : Battery
+  - maxSpeedKmH : double
+  - rangeKm : double
+  - rideMode : RideMode
+  - motorType : MotorType
+  - pasType : PasType
+  - lightsIntegrated : boolean
+  - hasThrottle : boolean
+
+  + ElectricVehicle(make: String, model: String, equipments: Equipment[], battery: Battery, motor: Motor, controller: Controller)
+
+  + getMotor() : Motor
+  + getController() : Controller
+  + getBattery() : Battery
+  + isHasThrottle() : boolean
+  + isLightsIntegrated() : boolean
+  + getPasType() : PasType
+  + getMotorType() : MotorType
+  + getRideMode() : RideMode
+  + getRangeKm() : double
+  + getMaxSpeedKmH() : double
+
+  + setMotorType(motorType: MotorType) : void
+  + setRideMode(rideMode: RideMode) : void
+  + setPasType(pasType: PasType) : void
+  + setLightsIntegrated(lightsIntegrated: boolean) : void
+  + setHasThrottle(hasThrottle: boolean) : void
+  + setMaxSpeedKmH(maxSpeedKmH: double) : void
+  + setRangeKm(rangeKm: double) : void
+
+  + go() : void
+  + brake() : void
+}
+
+Vehicle <|-- ElectricVehicle
+ElectricVehicle *-- Battery
+ElectricVehicle *-- Motor
+ElectricVehicle *-- Controller
+ElectricVehicle ..> RideMode
+ElectricVehicle ..> MotorType
+ElectricVehicle ..> PasType
+
+' -------------------------
+' ELECTRIC CONCRETE VEHICLES
+' -------------------------
+class EBike
+class EScooter
+class ESkateboard {
+  + ESkateboard(make: String, model: String, equipments: Equipment[], battery: Battery, motor: Motor, controller: Controller)
+  + getVehicleType() : String
+  + go() : void
+  + brake() : void
+  + printDetails() : void
+}
+class Segway {
+  + Segway(make: String, model: String, equipments: Equipment[], battery: Battery, motor: Motor, controller: Controller)
+  + getVehicleType() : String
+  + go() : void
+  + brake() : void
+  + printDetails() : void
+}
+
+ElectricVehicle <|-- EBike
+ElectricVehicle <|-- EScooter
+ElectricVehicle <|-- ESkateboard
+ElectricVehicle <|-- Segway
+
+EScooter ..> ScooterType
+EScooter ..> RideMode
+
+' -------------------------
+' NON-ELECTRIC CONCRETE VEHICLES
+' -------------------------
+class Bike {
+  + Bike(make: String, model: String, equipments: Equipment[])
+  + go() : void
+  + brake() : void
+  + printDetails() : void
+  + getVehicleType() : String
+}
+class KickScooter {
+  + KickScooter(make: String, model: String, equipments: Equipment[])
+  + go() : void
+  + brake() : void
+  + printDetails() : void
+  + getVehicleType() : String
+}
+class Skateboard {
+  + Skateboard(make: String, model: String, equipments: Equipment[])
+  + go() : void
+  + brake() : void
+  + printDetails() : void
+  + getVehicleType() : String
+}
+
+Vehicle <|-- Bike
+Vehicle <|-- KickScooter
+Vehicle <|-- Skateboard
+
+' -------------------------
+' RENTAL (service)
+' -------------------------
+class Rental {
+  - id : String
+  - user : User
+  - vehicle : Vehicle
+  - startTime : java.time.LocalDateTime
+  - endTime : java.time.LocalDateTime
+  - status : RentalStatus
+
+  + Rental(id: String, user: User, vehicle: Vehicle)
+  + getId() : String
+  + getUser() : User
+  + getVehicle() : Vehicle
+  + getStatus() : RentalStatus
+  + getStartTime() : java.time.LocalDateTime
+  + getEndTime() : java.time.LocalDateTime
+  + isActive() : boolean
+  + complete() : void
+  + cancel() : void
+  + getDurationMinutes() : long
+  + printDetails() : void
+}
+
+User "1" -- "*" Rental
+Vehicle "1" -- "*" Rental
+Rental ..> RentalStatus
+Rental --> User
+Rental --> Vehicle
+
+' -------------------------
+' OBSERVER PATTERN (service)
+' -------------------------
+interface RentalObserver {
+  + onRentalCompleted(rental: Rental) : void
+}
+
+class MaintenanceObserver {
+  - SERVICE_THRESHOLD : int
+  - usageCountByVehicleId : java.util.Map<String, Integer>
+  + onRentalCompleted(rental: Rental) : void
+  + printUsageSummary() : void
+}
+
+class NotificationObserver {
+  + onRentalCompleted(rental: Rental) : void
+}
+
+RentalObserver <|-- MaintenanceObserver
+RentalObserver <|-- NotificationObserver
+
+MaintenanceObserver --> Vehicle
+NotificationObserver --> Rental
+
+' -------------------------
+' FACTORY PATTERN (domain.vehicle)
+' -------------------------
+class VehicleFactory <<Factory>> {
+  + createVehicle(kind: VehicleKind, make: String, model: String, equipments: Equipment[], battery: Battery, motor: Motor, controller: Controller) : Vehicle
+}
+
+VehicleFactory --> Vehicle
+VehicleFactory ..> VehicleKind
+VehicleFactory ..> ScooterType
+VehicleFactory ..> RideMode
+
+' -------------------------
+' RENTAL SERVICE (service)
+' NOTE: exact methods depend on your RentalService.java.
+' Below includes methods clearly used by your controllers and your requirements.
+' -------------------------
+class RentalService <<Singleton>> {
+  - rentalService : RentalService
+  - users : java.util.List<User>
+  - vehicles : java.util.List<Vehicle>
+  - rentals : java.util.List<Rental>
+  - observers : java.util.List<RentalObserver>
+
+  + getInstance() : RentalService
+
+  + getUsers() : java.util.List<User>
+  + getVehicles() : java.util.List<Vehicle>
+
+  + registerUser(user: User) : void
+  + removeUser(user: User) : boolean
+
+  + registerVehicle(vehicle: Vehicle) : void
+
+  + bookVehicle(user: User, vehicle: Vehicle) : boolean
+  + releaseVehicle(user: User, vehicle: Vehicle) : boolean
+  + userHasActiveRental(user: User) : boolean
+
+  + getActiveRentals() : java.util.List<Rental>
+  + getRentalsForUser(user: User) : java.util.List<Rental>
+  + getActiveRentalsForUser(user: User) : java.util.List<Rental>
+  + getPastRentalsForUser(user: User) : java.util.List<Rental>
+
+  + getActiveRentalForVehicle(vehicle: Vehicle) : Rental
+  + getPastRentalsForVehicle(vehicle: Vehicle) : java.util.List<Rental>
+
+  + seedVehiclesIfEmpty() : void
+
+  + addObserver(observer: RentalObserver) : void
+  + removeObserver(observer: RentalObserver) : void
+}
+
+RentalService --> User
+RentalService --> Vehicle
+RentalService --> Rental
+RentalService --> RentalObserver
+
+@enduml

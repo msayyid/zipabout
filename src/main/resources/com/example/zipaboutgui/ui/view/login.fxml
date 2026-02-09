@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.zipaboutgui.ui.controller.LoginController">
+
+    <center>
+        <VBox spacing="18"
+              alignment="CENTER">
+
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
+
+            <!-- Title -->
+            <Label text="ZipAbout"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+            <!-- Username selection -->
+            <ComboBox fx:id="userComboBox"
+                      promptText="Select username"
+                      prefWidth="260"
+                      maxWidth="260" />
+
+            <!-- Password -->
+            <PasswordField fx:id="passwordField"
+                           promptText="Password"
+                           prefWidth="260"
+                           maxWidth="260" />
+
+            <!-- Login button -->
+            <Button text="Login"
+                    prefWidth="140"
+                    onAction="#handleLogin" />
+
+        </VBox>
+    </center>
+
+</BorderPane>
